@@ -108,10 +108,11 @@ console.log (permission)
 
 *//*
 const arr = [4, 81, 3, -12, 99, 14]
-let = minNum = arr[0]
+let minNum = arr[0]
 for (let i = 1; i < arr.length; i++) {
-    if (arr[i]< minNum)
-    minNum = arr[i]    
+    if (arr[i]< minNum) {
+        minNum = arr[i] 
+    }  
 }
 console.log(minNum);
 */
