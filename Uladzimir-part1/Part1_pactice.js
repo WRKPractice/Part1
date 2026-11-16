@@ -183,7 +183,7 @@ while (height < 5) {
 }
 console.log(days);
 */
-function calculatDays() {
+function calculateDays() {
     let height = 0; 
     let days = 0;
     function goUp() {    // за день +3
@@ -202,12 +202,12 @@ function calculatDays() {
     }
     return days;
 }
-console.log (calculatDays());
+console.log (calculateDays());
 
 // Напишите функцию, которая принимает массив чисел как параметр и 
 // возвращает сумму всех чисел этого массива. Если элемент массива не число,
 //  пропускаем этот элемент. (Решить с помощью функций filter и reduce)
-let rndArr = [2,30,100,"1"]
+let rndArr = [2,30,100,"1"];
 function sumOfNum(arr) {
     let numFilter = arr.filter(function(i){
         return typeof i === "number";
@@ -217,4 +217,4 @@ function sumOfNum(arr) {
     }, 0);
     return numSum;
 }
-console.log (sumNumbers(rndArr))
+console.log (sumOfNum(rndArr));
