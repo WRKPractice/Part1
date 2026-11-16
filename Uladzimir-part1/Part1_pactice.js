@@ -4,7 +4,7 @@ let c = 9;
 let str = "Hi 5!";
 let b = true;
 let y = 9 + "1";
-let x = "a" / 6
+let x = "a" / 6;
 console.log(typeof a); //undef
 console.log(typeof c); // num
 console.log(typeof str); // str
@@ -12,23 +12,23 @@ console.log(typeof b); // bool
 console.log(typeof y); // str. The "+" operator has two roles. If it sees two numbers, it performs a math operation. 
 // But in this case, we have a string, so it tries to glue them into a string.
 console.log(typeof x); // num. "/" has only math role so its always making number.
-*//*
+
 
 const number = 15;
         const result = number + 5;
         console.log(result);
 // выдает 20 , берет значение из number и прабавляет 5 , консоль подхватывает готовое значение
-*//*
+
 
 const number2 = "28";
         const result = number2 + 2;
         console.log(result); //"282"
 console.log(typeof result); // Т.к. number2 - это строка, оператор + склеивает её с числом 2.
 //операция приведения типов имеет более высокий приоритет чем математическая операция, приведение выполняется первым.
-*//*
+
 console.log( null || 2 || undefined ); //2
 // "||"проверяет ложное значение (false, 0, "", null/undefined) и возвращает первое истинное (если истинных нет возвращает полсденее значиение)
-*//*
+
 
 const x = 5;
         const y = 10;
@@ -40,7 +40,7 @@ const x = 5;
         // первое условие не верно(второе тоже), но оператор дальше не пойдет проверять и вернет первое ложное.
         console.log(x > 0 && "Hello");  // "Hello". 
         // Оператор && возвращает последний операнд, если все предыдущие были истинными.
-*//*
+
 
 //  || возвращает первый Thruly операнд, если оба falsy возращает последний.
 const a = 0;
@@ -50,7 +50,7 @@ const a = 0;
         console.log(a > 0 || b.length === 0); //false. оба ложные, возвращается второе.
         console.log(a > 0 || ""); // оба ложные , возвращается последнее (пустая строка).
         console.log(a < 0 || "Hello"); // первое ложное, оператор возвращает второе которое истинное (строку "Hello")
-*//*
+*/
  let x = 5;
          let y = 10;
          let z = 15;
@@ -58,42 +58,42 @@ const a = 0;
 console.log (result)// true
 // (falsy || thruly) && !(делаем true из false)(z === x - Falsy)
 // получаем (true) И (true)
-*//*
+
 let age = 18;
     let isAdult = age >= 18; //У нас тут операция сравнения, по результату будет bool console.log(typeof isAdult)
     let typeOfIsAdult = typeof isAdult;
     console.log(typeOfIsAdult);// boolean.
-*//*
+
 
 let day = 1;
 let dayName;
 switch (day) {
     case 1:
-        dayName = "Понедельник"
+        dayName = "Понедельник";
         break;
     case 2:
-        dayName = "Вторник"
+        dayName = "Вторник";
         break;
     case 3:
-        dayName = "Среда"
+        dayName = "Среда";
         break;
     case 4:
-        dayName = "Четверг"
+        dayName = "Четверг";
         break;
     case 5:
-        dayName = "Пятница"
+        dayName = "Пятница";
         break;
     case 6:
-        dayName = "Сб"
+        dayName = "Сб";
         break;
     case 7:
-        dayName = "Вс"
+        dayName = "Вс";
         break;
     default:
-        dayName = "Неверный день недели"
+        dayName = "Неверный день недели";
 }
-console.log (dayName)
-*//*
+console.log (dayName);
+
 let month = "April";
 let permission;
     switch (month) {
@@ -104,21 +104,20 @@ let permission;
     default:
         permission = "denied";
 }
-console.log (permission)
+console.log (permission);
 
-*//*
-const arr = [4, 81, 3, -12, 99, 14]
-let minNum = arr[0]
+const arr = [4, 81, 3, -12, 99, 14];
+let minNum = arr[0];
 for (let i = 1; i < arr.length; i++) {
     if (arr[i]< minNum) {
-        minNum = arr[i] 
+        minNum = arr[i];
     }  
 }
 console.log(minNum);
-*/
+
 //Найти сумму всех элементов массива [[1, 2], [3, 4, 5], [6, 7, 8], 9, [10], [0, 11], "Hello"].
 
-const nums = [[1, 2], [3, 4, 5], [6, 7, 8], 9, [10], [0, 11], "Hello"]
+const nums = [[1, 2], [3, 4, 5], [6, 7, 8], 9, [10], [0, 11], "Hello"];
 function sumNumbers(arr) {
     let sum = 0; // аккамулятор
     for (let item of arr) {
@@ -168,7 +167,7 @@ drawDiamond();
 //Переделайте задачку с улиткой используя функции (подсказка - используем вложенные функции).
 //Улитка ползёт вверх по стене высотой 5 метров. Каждый день она проползает вверх на 3 метра, 
 // а каждую ночь съезжает вниз на 2 метра. За сколько дней она доползет до вершины стены.
-/*
+
 let height = 0; 
 let days = 0;   
 
@@ -182,7 +181,7 @@ while (height < 5) {
     height = height - 2; 
 }
 console.log(days);
-*/
+
 function calculateDays() {
     let height = 0; 
     let days = 0;
