@@ -1,4 +1,5 @@
 //1.
+
 const room = {
     height: 3,
     tv: "samsung",
@@ -210,10 +211,10 @@ console.log(dog2.getFood("wet", 2));
 console.log(dog3.getFood("dry", 3, "Royal Canin")); 
 
 //4.
-/*
-Admin extends User. 
-#password и #updatePassword() — приватные в User, Admin к ним не имеет доступа
-*/
+
+//Admin extends User 
+//#password и #updatePassword() — приватные в User, Admin к ним не имеет доступа
+
 
 class User {
     #password;
@@ -251,9 +252,134 @@ testUser.resetPassword("newPass");
 console.log(testAdmin.deleteUser("Uladzimir")); 
 
 //5.
+class Any {
+    constructor(name, age, gender) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+    }
+    
+    getPos() { return "Any"; }
+    
+    // Сделал toString, иначе - [object Object]
+    toString() { return this.name + " — " + this.getPos(); }
+}
 
+class Student extends Any {
+    constructor(name, age, gender, course, major, gpa) {
+        super(name, age, gender);
+        this.course = course;
+        this.major = major;
+        this.gpa = gpa;
+    }
+    getPos() { return "Student, " + this.course + "course"; }
+}
 
+class Teacher extends Any {
+    constructor(name, age, gender, salary, workHours) {
+        super(name, age, gender);
+        this.salary = salary;
+        this.workHours = workHours;
+    }
+    getPos() { return "Teacher"; }
+    
+    getAnnual() { 
+        return this.salary * 12; 
+    }
+}
+// цепочка наследований Teacher> dean> principal
+class Dean extends Teacher {
+    constructor(...params){ // решил просто вбросить все параметры там всеравно не важно, фабрика все сделает
+        super(...params)
+    }
+    getPos() { return "Dean"; }
+    
+    getAnnual() {
+        const deanSal = this.salary * 2;
+        let year = deanSal * 12;
+        let bonus = deanSal;
+        return year + bonus; 
+    }
+}
 
+class Principal extends Dean {
+    constructor(...params){
+        super(...params)
+    }
+    
+    getAnnual() {
+        const dirSalary = this.salary * 2 * 1.5; 
+        let year = dirSalary * 12;
+        let bonus = dirSalary * 2;
+        return year + bonus;
+    }
+    getPos() { return "Principal"; }
+}
+// фабрика, создает нужный конструктор по type
+class buildingPpl {
+    static create(type, info) {
+        if (type == "student") {
+            return new Student(info.name, info.age, info.gender, info.course, info.major, info.gpa);
+        } 
+        else if (type == "teacher") {
+            return new Teacher(info.name, info.age, info.gender, info.salary, info.workHours);
+        } 
+        else if (type == "dean") {
+            return new Dean(info.name, info.age, info.gender, info.salary, info.workHours);
+        } 
+        else if (type == "principal") {
+            return new Principal(info.name, info.age, info.gender, info.salary, info.workHours);
+        }
+    }
+}
+
+class MySchool {
+    constructor() { 
+        this.people = []; 
+    }
+    addPerson(human) { 
+        this.people.push(human); 
+        return this; 
+    }
+    printAll() {
+        console.log("=== School list ===");
+        this.people.forEach(p => console.log(" •", p.toString()));
+    }
+    getDir() { // переписал под find , так как директор - один
+            return this.people.find(p => p instanceof Principal);
+    }
+    getValedictorian() { // а тут фильтруем и ищем best.gpa
+        let students = this.people.filter(std => std instanceof Student);
+        return students.reduce((best, s) => { return s.gpa > best.gpa ? s : best }, students[0]); 
+    }
+}
+// запихиваем все методы для создания школы в билдер 
+class SchoolMaker {
+    constructor() { 
+        this.school = new MySchool(); 
+    }
+    addStudent(info)   { this.school.addPerson(buildingPpl.create("student", info)); return this; }
+    addTeacher(info)   { this.school.addPerson(buildingPpl.create("teacher", info)); return this; }
+    addDean(info)      { this.school.addPerson(buildingPpl.create("dean", info)); return this; }
+    addPrincipal(info) { this.school.addPerson(buildingPpl.create("principal", info)); return this; }
+    build() { return this.school; }
+}
+// создаем персонал
+const mySchool = new SchoolMaker()
+    .addPrincipal({ name: "Ula", age: 50, gender: "M", salary: 1500, workHours: 40 })
+    .addDean     ({ name: "Маry", age: 45, gender: "F", salary: 2500, workHours: 36 })
+    .addTeacher  ({ name: "123", age: 39, gender: "M", salary: 1500, workHours: 24 })
+    .addTeacher  ({ name: "dsa", age: 35, gender: "F", salary: 1400, workHours: 20 })
+    .addStudent  ({ name: "532", age: 19, gender: "M", course: 1, major: "Prog", gpa: 3.7 })
+    .addStudent  ({ name: "aaaa", age: 21, gender: "F", course: 3, major: "Math", gpa: 3.95 })
+    .addStudent  ({ name: "ssss", age: 20, gender: "M", course: 2, major: "Eng", gpa: 2.8 })
+    .build();
+
+mySchool.printAll();
+const dir = mySchool.getDir(); 
+console.log("\nAnnual Salary:", dir.getAnnual());
+const best = mySchool.getValedictorian();
+console.log("Best Student:", best.name, "GPA:", best.gpa);
 
 // Error
 class ValidationError extends Error { //наследуемся от Error встроеного класса
