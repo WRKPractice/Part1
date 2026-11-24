@@ -181,7 +181,7 @@ class Person {
     }
 }
 
-const person = new Person(30);
+const person = new Person(undefined, undefined, 30);
 console.log(person.sayFullName());
 console.log(Person.greetExtraTerrestrials('Martians'));
 
@@ -250,10 +250,12 @@ class Dog {
     }
 
     getFood(foodType, quantity, brand) {
-        if (foodType && quantity && brand) {
+        if (foodType && quantity !== undefined && brand) {
             console.log(`${this.breed} ${this.name} eats ${quantity} bowls a day of ${foodType} food by ${brand}.`);
-        } else if (foodType && quantity) {
+        } else if (foodType && quantity !== undefined) {
             console.log(`${this.breed} ${this.name} eats ${quantity} bowls a day of ${foodType} food.`)
+        } else if (foodType && brand) {
+            console.log(`${this.breed} ${this.name} eats ${foodType} food by ${brand}.`)
         } else if (foodType) {
             console.log(`${this.breed} ${this.name} eats ${foodType} food.`)
         } else {
@@ -269,7 +271,8 @@ const henry = new Dog('Corgi', 'Henry');
 masha.getFood();
 masha.getFood('dry');
 demi.getFood('wet', 2);
-henry.getFood('dry', 3, 'Royаl Canin');
+henry.getFood('dry', 0, 'Royаl Canin');
+masha.getFood('dry', 0);
 
 /*
 Создать классы пользователя и администратора
@@ -353,7 +356,7 @@ const result = [user, admin];
 console.log(result);
 
 /*
-5. Креативное задание. Создать структуру школы.
+5. Креативное задание. Создать структуру школы. (решите задачу испльзуя 5.1 фабрику и 5.2 билдер)
 В школе есть люди, студенты, учителя, декан, директор школы.
 У каждого свои свойства, некоторые повторяющиеся, как например имя, возраст, пол, можно больше.
 Но так же есть и не повторяющиеся, например,
@@ -381,8 +384,8 @@ class Person {
         return 'person';
     }
 
-    printInfo() {
-        console.log(`This is the ${this.getPosition()} ${this.name}. ${this.gender === 'm' ? 'He' : 'She'} is ${this.age} years old.`);
+    printPosition() {
+        console.log(`${this.name} - ${this.getPosition()}`);
     }
 }
 
@@ -421,10 +424,6 @@ class Teacher extends Person {
 }
 
 class Dean extends Teacher {
-    constructor(name, age, gender, workingHours) {
-        super(name, age, gender, workingHours);
-    }
-
     getPosition() {
         return 'dean';
     }
@@ -439,10 +438,6 @@ class Dean extends Teacher {
 }
 
 class HeadOfSchool extends Dean {
-    constructor(name, age, gender, workingHours) {
-        super(name, age, gender, workingHours);
-    }
-
     getPosition() {
         return 'head of school';
     }
@@ -456,36 +451,110 @@ class HeadOfSchool extends Dean {
     }
 }
 
-const teacher = new Teacher('Alex Grey', 33, 'm', 40);
-const dean = new Dean('Edward Bom', 45, 'm', 40);
-const headOfSchool = new HeadOfSchool('Bob White', 45, 'm', 40);
-const student = new Student("Anna", 20, "f", 2, "IT", 3.8);
-const student1 = new Student("Max", 18, "m", 4, "Sport", 4);
-const student2 = new Student("Mary", 19, "f", 3, "Economics", 3);
-const student3 = new Student("Kate", 20, "f", 1, "IT", 3.5);
-const students = [student, student1, student2, student3];
+class School {
+    constructor(name) {
+        this.name = name;
+        this.people = [];
+    }
 
-teacher.printInfo();
-dean.printInfo();
-headOfSchool.printInfo();
-for (let student of students) {
-    student.printInfo();
-}
+    addPerson(person) {
+        this.people.push(person);
+    }
 
-console.log(`The head of school's monthly salary is ${headOfSchool.getSalary()}.`);
-console.log(`The head of school's annual salary is ${headOfSchool.getAnnualSalaryWithBonus()}.`);
-
-function printValedictorian(students) {
-    let bestStudent = students[0];
-    for (let student of students) {
-        if (student.gpa > bestStudent.gpa) {
-            bestStudent = student;
+    printAllPositions() {
+        for (const person of this.people) {
+            person.printPosition();
         }
     }
-    console.log(`The valedictorian is ${bestStudent.name}.`);
+
+    printValedictorian() {
+        const students = this.people.filter(student => student instanceof Student);
+        const studentsWithGpa = students.filter(student => student.gpa > 0);
+        if (studentsWithGpa.length === 0) {
+            console.log('There are no students with gpa.');
+            return;
+        }
+        const maxGpa = Math.max(...studentsWithGpa.map(s => s.gpa));
+        const bestStudents = studentsWithGpa.filter(student => student.gpa === maxGpa);
+        const bestStudentsNames = bestStudents.map(s => s.name);
+        bestStudents.length === 1 ? console.log(`The valedictorian is ${bestStudentsNames[0]}.`) :
+            console.log(`The valedictorians are ${bestStudentsNames.join(', ')}.`);
+    }
+
+    printHeadOfSchoolSalary() {
+        const headOfSchool = this.people.find(head => head instanceof HeadOfSchool);
+        if (!headOfSchool) {
+            console.log('There is no head of school.');
+            return;
+        }
+        console.log(`The head of school's monthly salary is ${headOfSchool.getSalary()}.`);
+        console.log(`The head of school's annual salary is ${headOfSchool.getAnnualSalaryWithBonus()}.`);
+    }
 }
 
-printValedictorian(students);
+class PersonFactory {
+    static createPerson(role, info) {
+        switch (role) {
+            case 'student':
+                return new Student(info.name, info.age, info.gender, info.year, info.major, info.gpa);
+            case 'teacher':
+                return new Teacher(info.name, info.age, info.gender, info.workingHours);
+            case 'dean':
+                return new Dean(info.name, info.age, info.gender, info.workingHours);
+            case 'head of school':
+                return new HeadOfSchool(info.name, info.age, info.gender, info.workingHours);
+        }
+    }
+}
+
+class SchoolBuilder {
+    constructor(name) {
+        this.school = new School(name);
+    }
+
+    addStudent(info) {
+        const student = PersonFactory.createPerson('student', info);
+        this.school.addPerson(student);
+        return this;
+    }
+
+    addTeacher(info) {
+        const teacher = PersonFactory.createPerson('teacher', info);
+        this.school.addPerson(teacher);
+        return this;
+    }
+
+    addDean(info) {
+        const dean = PersonFactory.createPerson('dean', info);
+        this.school.addPerson(dean);
+        return this;
+    }
+
+    addHeadOfSchool(info) {
+        const headOfSchool = PersonFactory.createPerson('head of school', info);
+        this.school.addPerson(headOfSchool);
+        return this;
+    }
+
+    build() {
+        return this.school;
+    }
+}
+
+const school = new SchoolBuilder('Best school')
+    .addStudent({name: 'Anna', age: 20, gender: 'f', year: 3, major:'IT',gpa: 4})
+    .addStudent({name: 'Max', age: 22, gender: 'm', year: 2, major:'Sport',gpa: 3})
+    .addStudent({name: 'Mary', age: 18, gender: 'f', year: 4, major:'Languages',gpa: 4})
+    .addStudent({name: 'Alex', age: 19, gender: 'm', year: 1, major:'Physics',gpa: 3})
+    .addTeacher({name:'Alex Grey', age: 33, gender: 'm', workingHours: 40})
+    .addTeacher({name:'Kate Green', age: 33, gender: 'f', workingHours: 40})
+    .addDean({name:'Edward Bom', age: 40, gender: 'm', workingHours: 40})
+    .addHeadOfSchool({name:'Bob White', age: 45, gender: 'm', workingHours: 40})
+    .build();
+
+school.printAllPositions();
+school.printValedictorian();
+school.printHeadOfSchoolSalary();
 
 /*
 Тема: Error
