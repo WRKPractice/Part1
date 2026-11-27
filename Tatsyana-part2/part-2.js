@@ -503,6 +503,8 @@ class PersonFactory {
                 return new Dean(info.name, info.age, info.gender, info.workingHours);
             case 'head of school':
                 return new HeadOfSchool(info.name, info.age, info.gender, info.workingHours);
+            default:
+                throw new Error(`Unknown role: ${role}`);
         }
     }
 }
